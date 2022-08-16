@@ -1,3 +1,4 @@
 /old-stuff/*
 /old-stuff
 *.DS_Store
+.DS_Store

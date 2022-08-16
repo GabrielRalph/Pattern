@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <link href = "./vexp/v-exp.css" rel = "stylesheet"/>
+  </head>
+
+  <script type = "module" src = "./GeoXML/geo-elements.js"></script>
+  <body>
+    <procedural-svg>
+      <svg-diagram>
+      </svg-diagram>
+      <procedure-editor>
+        <div cool class = "tools">
+          <div>
+            <svg onclick="add('point')" icon = "point" />
+            <svg onclick="add('hline')" icon = "hline" />
+            <svg onclick="add('vline')" icon = "vline" />
+            <svg onclick="add('line')" icon = "line" />
+            <svg onclick="add('cubic_curve')" icon = "cubic_curve" />
+            <!-- <svg icon = "icon" "icons-06.svg" /> -->
+            <svg onclick="add('circle')" icon = "circle" />
+            <svg onclick="add('rect')" icon = "rect" />
+          </div>
+        </div>
+        <geo-group>
+
+        </geo-group>
+      </procedure-editor>
+    </procedural-svg>
+  </body>
+
+  <script>
+    function add(type){
+      console.log(type);
+      let el = document.createElement("geo-element");
+      el.type = type;
+      document.querySelector("geo-group").appendChild(el);
+
+    }
+
+
+  </script>
+
+
+  <style>
+
+    body {
+      --orange: #F96D06;
+    }
+
+    .color-orange {
+      color: var(--orange);
+    }
+    procedural-svg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: flex;
+      margin: 0.5em;
+      gap: 0.5em;
+    }
+
+    svg-display {
+      width: 50%;
+    }
+
+    .tools {font-size: 1em;}
+
+    svg[icon] {
+      height: 3em;
+      width: 3em;
+      /* border: 1.5px solid #333333; */
+      border-radius: 0.4em;
+      background: white;
+    }
+
+    .icon-line {
+      fill: none;
+      stroke-width: 7;
+      stroke: var(--orange);
+    }
+
+    .icon-guide {
+      stroke: #553300;
+      stroke-width: 7;
+    }
+    .icon-tangent {
+      stroke-width: 7;
+      stroke: #55330055;
+    }
+
+    .icon-point {
+      fill: #553300;
+    }
+
+    procedure-editor {
+      width: 40%;
+    }
+    drag-order-list {
+      display: flex;
+      flex-direction: column;
+      row-gap: 0.2em;
+    }
+
+    svg-diagram {
+      display: block;
+      width: 60%;
+    }
+    svg {
+      width: 100%;
+      font-size: 0.5em;
+    }
+
+
+    geo-element {
+      margin-top: 0.3em;
+      display: flex;
+      align-items: center;
+      border-bottom: 1.5px solid #F96D06;
+    }
+
+
+
+    [error="bracket"], [error="variable"], [error="operator"] {
+      background: #ffb59b;
+    }
+
+    .highlight {
+      background: #ff642d96;
+      outline: 2px solid #ff642d96;
+    }
+
+
+
+
+    .resize{
+      --width: 15px;
+      font-family: inherit;
+      font-size: inherit;
+      width: var(--width);
+      border: none;
+      outline: none;
+    }
+
+  </style>
+</html>

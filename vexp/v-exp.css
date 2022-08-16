@@ -1,0 +1,39 @@
+v-exp {
+  display: block;
+  position: relative;
+  /* overflow: hidden; */
+  /* width: 100%; */
+}
+
+v-exp .placeholder {
+  position: absolute;
+  user-select: none;
+  pointer-events: none;
+  z-index: 0;
+  white-space: pre;
+}
+
+v-exp input{
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  border: none;
+  outline: none;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  background: transparent;
+}
+
+v-exp .literal {
+  background: #cf5119d6;
+  padding: 0 0.3em;
+  font-size: 0.8em;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  border-radius: 2em;
+  user-select: none;
+  pointer-events: none;
+  color: white;
+}
