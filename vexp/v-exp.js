@@ -1,5 +1,5 @@
 import {parse_expression, solve_expression, solveVector, Vector} from "./vector-expression/str-compiler.js"
-import {SvgPlus} from "../../4.js"
+import {SvgPlus} from "../SvgPlus/4.js"
 
 class VExp extends SvgPlus {
   constructor(el = "v-exp") {

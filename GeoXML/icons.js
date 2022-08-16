@@ -1,4 +1,4 @@
-import {SvgPlus} from "../4.js"
+import {SvgPlus} from "../SvgPlus/4.js"
 
 const ICONS = {
 	point: '<circle class="icon-point" cx="50" cy="50" r="5.012"/>',

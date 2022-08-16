@@ -1,5 +1,5 @@
 import {VExp} from "../vexp/v-exp.js"
-import {SvgPlus} from "../4.js"
+import {SvgPlus} from "../SvgPlus/4.js"
 import {Icon} from "./icons.js"
 
 function round(n, dp) {return Math.round(n * Math.pow(10, dp))/Math.pow(10, dp)}

@@ -1,4 +1,4 @@
-import {SvgPlus, SvgPath, Vector} from "./4.js";
+import {SvgPlus, SvgPath, Vector} from "./SvgPlus/4.js";
 
 class DotNote extends SvgPlus {
   #line = new Vector;
