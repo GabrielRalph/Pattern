@@ -1,6 +1,9 @@
 import {Operator, Vector} from "./operators.js"
 function sqrt(v){return Math.sqrt(v)}
 function cos(x) {return Math.cos(x);}
+function tan(x) {return Math.tan(x);}
+function asin(x) {return Math.asin(x);}
+function acos(x) {return Math.acos(x);}
 function abs(x) {return Math.abs(x);}
 function sin(x) {return Math.sin(x);}
 function pow(x, y) {return Math.pow(x, y);}
@@ -23,10 +26,22 @@ const FUNCTIONS = {
     let v = solveVector(a, data);
     return new Vector(sin(v.x), sin(v.y))
   },
+  "tan": (a, data) => {
+    let v = solveVector(a, data);
+    return new Vector(tan(v.x), tan(v.y))
+  },
+  "asin": (a, data) => {
+    let v = solveVector(a, data);
+    return new Vector(asin(v.x), asin(v.y))
+  },
 
   "cos": (a, data) => {
     let v = solveVector(a, data);
     return new Vector(cos(v.x), cos(v.y))
+  },
+  "acos": (a, data) => {
+    let v = solveVector(a, data);
+    return new Vector(acos(v.x), acos(v.y))
   },
 
   "abs": (a, data) => {
@@ -39,14 +54,56 @@ const FUNCTIONS = {
     return new Vector(sqrt(v.x), sqrt(v.y))
   },
 
+  "rotate": (a, data) => {
+    let split = parse_expression(a);
+    split = split_expressions(split);
+    let p1 = solve_expression(split[0], data);
+    let p2 = solveVector(split[1], data);
+    console.log(p2 + "  " + p2.x);
+    let res = p1.rotate(p2.x);
+    return res;
+  },
+
+  "intersection": (a, data) => {
+    let lines = a.split(/\s*,\s*/g);
+    let l0 = data[lines[0]];
+    let l1 = data[lines[1]];
+    let res = null;
+    if (l0.type == "line" && l1.type == "line") {
+      res = Vector.intersection(l0[0], l0[1], l1[0], l1[1]);
+    }
+    return res;
+  },
+
+  "unit": (a, data) => {
+    let v = solveVector(a, data);
+    return v.dir();
+  },
+
+  "argument": (a, data) => {
+    let v = solveVector(a, data);
+    let angle = (new Vector(1, 0)).angleBetween(v);
+    return new Vector(angle, angle);
+  },
+
+  "dist": (a, data) => {
+    let split = parse_expression(a);
+    split = split_expressions(split);
+    let p1 = solve_expression(split[0], data);
+    let p2 = solve_expression(split[1], data);
+    return new Vector(p1.dist(p2));
+  },
+
   "dir": (a, data) => {
     let v = solveVector(a, data);
     return new Vector(cos(v.x), sin(v.x))
   },
+
   "x": (a, data) => {
     let v = solveVector(a, data);
     return new Vector(v.x, v.x)
   },
+
   "y": (a, data) => {
     let v = solveVector(a, data);
     return new Vector(v.y, v.y)
@@ -503,4 +560,4 @@ function solveVector(params, data) {
 }
 
 
-export {solveVector, parse_expression, solve_expression, Vector}
+export {solveVector, parse_expression, solve_expression, Vector, UNITS}

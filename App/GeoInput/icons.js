@@ -1,6 +1,12 @@
 import {SvgPlus} from "../SvgPlus/4.js"
 
 const ICONS = {
+	scaler: `
+	<line class="icon-tangent" x1="28.9" y1="50" x2="71.1" y2="50"/>
+	<line class="icon-tangent" x1="10.5" y1="69" x2="10.5" y2="31"/>
+	<line class="icon-tangent" x1="89.5" y1="69" x2="89.5" y2="31"/>
+	<polygon class="icon-point" points="28.9,50 28.9,60.6 19.7,55.3 10.5,50 19.7,44.7 28.9,39.4 	"/>
+	<polygon class="icon-point" points="71.1,50 71.1,39.4 80.3,44.7 89.5,50 80.3,55.3 71.1,60.6 	"/>`,
 	point: '<circle class="icon-point" cx="50" cy="50" r="5.012"/>',
   vline: '<line class="icon-guide" x1="50" y1="0" x2="50" y2="100"/>',
   hline: '<line class="icon-guide" x1="100" y1="50" x2="0" y2="50"/>',
@@ -30,7 +36,6 @@ const ICONS = {
 let onchild = (mutation) => {
   for (let el of document.querySelectorAll("svg[icon]")) {
 		let name = el.getAttribute("icon");
-		console.log(name);
 		if (!SvgPlus.is(el, Icon)) {
 			new Icon(name, el);
 		}

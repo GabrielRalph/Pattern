@@ -1,3 +1,6 @@
 [submodule "SvgPlus"]
-	path = SvgPlus
+	path = App/SvgPlus
 	url = https://github.com/GabrielRalph/SvgPlus.git
+[submodule "FireUser"]
+	path = App/FireUser
+	url = https://github.com/GabrielRalph/FireUser.git

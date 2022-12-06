@@ -1,0 +1,22 @@
+```HTML
+<fire-user users-ref = "app/users/" root-ref = "app/users/demo" config = 'config_directory.json'>
+
+  <div name = "loader">
+    Loading
+  </div>
+
+  <template name = "no-user">
+    <div class = "user-bar">
+      <button signin>
+        Sign in
+      </button>
+    </div>
+  </template>
+
+  <template name = "user">
+      <h1>Hello {{displayName}}</h1>
+      <button signout>Sign Out</button>
+  </template>
+
+</fire-user>
+```

@@ -3,148 +3,182 @@
   <head>
     <meta charset="utf-8">
     <title></title>
-    <link href = "./vexp/v-exp.css" rel = "stylesheet"/>
   </head>
-
-  <script type = "module" src = "./GeoXML/geo-elements.js"></script>
   <body>
-    <procedural-svg>
-      <svg-diagram>
-      </svg-diagram>
-      <procedure-editor>
-        <div cool class = "tools">
-          <div>
-            <svg onclick="add('point')" icon = "point" />
-            <svg onclick="add('hline')" icon = "hline" />
-            <svg onclick="add('vline')" icon = "vline" />
-            <svg onclick="add('line')" icon = "line" />
-            <svg onclick="add('cubic_curve')" icon = "cubic_curve" />
-            <!-- <svg icon = "icon" "icons-06.svg" /> -->
-            <svg onclick="add('circle')" icon = "circle" />
-            <svg onclick="add('rect')" icon = "rect" />
-          </div>
-        </div>
-        <geo-group>
+    <svg-diagram>
+    </svg-diagram>
+    <div>
+      ×
+      </div>
+    <vexp-text>
+      <div class = "rel">
+        <div class = "disp"></div>
+        <textarea name="pattern" rows="80" cols="50"></textarea>
+      </div>
+    </vexp-text>
 
-        </geo-group>
-      </procedure-editor>
-    </procedural-svg>
   </body>
 
-  <script>
-    function add(type){
-      console.log(type);
-      let el = document.createElement("geo-element");
-      el.type = type;
-      document.querySelector("geo-group").appendChild(el);
-
+  <script type="module">
+    import {parse_expression, solve_expression} from "../VExp/vexp.js"
+    import {SvgDiagram} from "../SvgDiagram/svg-diagram.js"
+    let vexptext = document.querySelector("vexp-text");
+    let diagram = document.querySelector("svg-diagram");
+    let text = vexptext.querySelector("textarea")
+    let copy = vexptext.querySelector(".disp")
+    let types = {
+      variable: {
+        params: 1,
+      },
+      point: {
+        params: 1,
+      },
+      line: {
+        params: 2,
+      },
+      cubic: {
+        params: 4,
+      }
     }
 
+    function parseInput(text) {
+      let lines = text.split("\n");
+      let data = {};
+      let parami = 0;
+      let currentVar = [];
+      // console.log(currentVar.type);
+      let texthtml = "";
+      for (let line of lines) {
+        if (parami == 0) {
+          currentVar = [];
+          let match = line.match(/^(?:(\w+)\))?\s*([\w\s]+?)\s*=(.*)/);
+          if (match) {
+            let [m, type, name, exp] = match;
+            if (!type) type = "variable";
+            currentVar.type = type;
+            let params = types[type].params;
+            // console.log(type, params);
+            try {
+              let vexp = parse_expression(exp);
+              let value = solve_expression(vexp, data);
+              if (params == 1) {
+                value.type = type;
+                data[name] = value;
+                parami = 0;
+              } else {
+                currentVar.push(value);
+                parami = params;
+                data[name] = currentVar;
+              }
+              texthtml += line;
+              if (type == "variable") texthtml += " = " + Math.round(data[name].x*100)/100 ;
+              texthtml += "\n"
+            } catch (e) {
+              texthtml += "<error>"+ line + "</error>\n";
+              parami = 0;
+            }
+          }
+        } else if (currentVar.type in types){
+          try {
+            let vexp = parse_expression(line);
+            let value = solve_expression(vexp, data);
+            currentVar.push(value);
+            if (currentVar.length == parami) {
+              parami = 0;
+            }
+            texthtml += line + "\n";
+          } catch (e) {
+            parami = 0;
+            texthtml += "<error>"+ line + "</error>\n";
 
+          }
+        }
+      }
+      return [data, texthtml]
+    }
+    function updateText(value){
+      let [data, html] = parseInput(value);
+      diagram.data = data;
+      localStorage.setItem("pattern", value);
+      copy.innerHTML = html;
+    }
+
+    text.value = localStorage.getItem("pattern") || ""
+    updateText(text.value);
+    text.oninput = () => {
+      updateText(text.value)
+    }
   </script>
 
-
-  <style>
-
+  <style type = "text/css">
     body {
-      --orange: #F96D06;
-    }
-
-    .color-orange {
-      color: var(--orange);
-    }
-    procedural-svg {
+      display: flex;
       position: fixed;
       top: 0;
       left: 0;
       right: 0;
       bottom: 0;
-      display: flex;
       margin: 0.5em;
       gap: 0.5em;
     }
-
-    svg-display {
-      width: 50%;
-    }
-
-    .tools {font-size: 1em;}
-
-    svg[icon] {
-      height: 3em;
-      width: 3em;
-      /* border: 1.5px solid #333333; */
-      border-radius: 0.4em;
-      background: white;
-    }
-
-    .icon-line {
-      fill: none;
-      stroke-width: 7;
-      stroke: var(--orange);
-    }
-
-    .icon-guide {
-      stroke: #553300;
-      stroke-width: 7;
-    }
-    .icon-tangent {
-      stroke-width: 7;
-      stroke: #55330055;
-    }
-
-    .icon-point {
-      fill: #553300;
-    }
-
-    procedure-editor {
-      width: 40%;
-    }
-    drag-order-list {
-      display: flex;
-      flex-direction: column;
-      row-gap: 0.2em;
-    }
-
     svg-diagram {
       display: block;
-      width: 60%;
-    }
-    svg {
       width: 100%;
-      font-size: 0.5em;
     }
-
-
-    geo-element {
-      margin-top: 0.3em;
-      display: flex;
-      align-items: center;
-      border-bottom: 1.5px solid #F96D06;
+    svg-diagram svg {
+      width: 100%;
+      height: 100%;
     }
-
-
-
-    [error="bracket"], [error="variable"], [error="operator"] {
-      background: #ffb59b;
+    vexp-text {
+      /* overflow: hidden; */
+      overflow-y: scroll;
+      width: 100%;
+      /* position: relative; */
+      display: inline-block;
+      outline: 2px solid blue;
+      border-radius: 3px;
+      height: 100%;
     }
-
-    .highlight {
-      background: #ff642d96;
-      outline: 2px solid #ff642d96;
+    vexp-text .rel {
+      position: relative;
     }
-
-
-
-
-    .resize{
-      --width: 15px;
-      font-family: inherit;
-      font-size: inherit;
-      width: var(--width);
-      border: none;
+    vexp-text textarea{
       outline: none;
+      border: none;
+      max-height: 100%;
+      padding: 0;
+      font-size: 1em;
     }
-
+    vexp-text error {
+      /* display: block; */
+      background: #f005;
+    }
+    vexp-text b {
+      color: black;
+    }
+    vexp-text .disp error:last-of-type {
+      /* background: #0000; */
+      border-bottom: 1px solid red;
+    }
+    vexp-text .disp {
+      user-select: none;
+      pointer-events: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      font-size: 1em;
+      font-family: monospace;
+      color: fieldtext;
+      letter-spacing: normal;
+      word-spacing: normal;
+      display: inline-block;
+      text-align: start;
+      white-space: pre-wrap;
+      overflow-wrap: break-word;
+      margin: 0em;
+      padding: 2px;
+      color: #0000;
+      width: 100%;
+    }
   </style>
 </html>

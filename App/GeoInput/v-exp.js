@@ -1,23 +1,30 @@
-import {parse_expression, solve_expression, solveVector, Vector} from "./vector-expression/str-compiler.js"
+import {parse_expression, solve_expression, solveVector, Vector, UNITS} from "./compiler/vexp.js"
 import {SvgPlus} from "../SvgPlus/4.js"
 
+let defaultUnit = UNITS.cm;
 class VExp extends SvgPlus {
   constructor(el = "v-exp") {
     super(el);
     this.placeholderEl = this.createChild("div", {class: "placeholder"});
     this.input = this.createChild("input");
     this.literalEl = this.createChild("div", {class: "literal"})
+
     this.input.addEventListener("focusout", () => {
       this.parseInput();
-    })
+      const event = new Event("focusout");
+      this.dispatchEvent(event);
+    });
+
     this.input.addEventListener("focusin", () => {
       this.clearError();
-    })
+      const event = new Event("focusin");
+      this.dispatchEvent(event);
+    });
 
     this.input.addEventListener("input", () => {
       const event = new Event("input");
       this.dispatchEvent(event);
-    })
+    });
   }
 
   get type(){
@@ -26,6 +33,11 @@ class VExp extends SvgPlus {
 
   get value(){
     return this.input.value;
+  }
+
+  set value(value) {
+    this.input.value = value;
+    this.parseInput();
   }
 
   getVector(data) {
@@ -45,7 +57,10 @@ class VExp extends SvgPlus {
   }
 
   set literal(value){
-    this.literalEl.innerHTML = value.toString(1, ', ');
+    if (value instanceof Vector) {
+      value = value.div(defaultUnit);
+    }
+    this.literalEl.innerHTML = value.toString(2, ', ');
   }
 
   vectorFunc(input, name) {
@@ -57,7 +72,7 @@ class VExp extends SvgPlus {
   parseInput(){
     this.clearError();
     try {
-      this.exp = parse_expression(`(${this.input.value})`);
+      this.exp = parse_expression(`(${this.value})`);
     } catch (e) {
       this.error(e);
     }

@@ -1,0 +1,409 @@
+{
+    "type": "group",
+    "name": "",
+    "elements": [
+        {
+            "0": "44cm",
+            "name": "CL_f",
+            "type": "scaler"
+        },
+        {
+            "0": "52cm",
+            "name": "CL_b",
+            "type": "scaler"
+        },
+        {
+            "0": "51cm",
+            "name": "FL_f",
+            "type": "scaler"
+        },
+        {
+            "0": "54cm",
+            "name": "FL_b",
+            "type": "scaler"
+        },
+        {
+            "0": "52cm",
+            "name": "SS_f",
+            "type": "scaler"
+        },
+        {
+            "0": "55cm",
+            "name": "SS_b",
+            "type": "scaler"
+        },
+        {
+            "0": "19cm",
+            "name": "AS_f",
+            "type": "scaler"
+        },
+        {
+            "0": "22cm",
+            "name": "AS_b",
+            "type": "scaler"
+        },
+        {
+            "0": "18cm",
+            "name": "AB",
+            "type": "scaler"
+        },
+        {
+            "0": "27cm",
+            "name": "AHD",
+            "type": "scaler"
+        },
+        {
+            "0": "AHD * 1.17",
+            "name": "BD",
+            "type": "scaler"
+        },
+        {
+            "0": "22cm / 2",
+            "name": "BS",
+            "type": "scaler"
+        },
+        {
+            "0": "48cm - AHD",
+            "name": "SideL",
+            "type": "scaler"
+        },
+        {
+            "0": "45cm / 2",
+            "name": "front bust",
+            "type": "scaler"
+        },
+        {
+            "0": "49cm / 2",
+            "name": "back bust",
+            "type": "scaler"
+        },
+        {
+            "0": "38cm / 2",
+            "name": "front waist",
+            "type": "scaler"
+        },
+        {
+            "0": "36cm / 2",
+            "name": "back waist",
+            "type": "scaler"
+        },
+        {
+            "0": "11.5cm",
+            "name": "SL",
+            "type": "scaler"
+        },
+        {
+            "0": "0",
+            "name": "A",
+            "type": "point"
+        },
+        {
+            "0": "A down FL_f",
+            "name": "B",
+            "type": "point"
+        },
+        {
+            "0": "A",
+            "1": "B",
+            "name": "",
+            "type": "line"
+        },
+        {
+            "0": "A left AS_f",
+            "name": "C",
+            "type": "point"
+        },
+        {
+            "0": "A",
+            "1": "C",
+            "name": "",
+            "type": "line"
+        },
+        {
+            "0": "C",
+            "1": "C down 10\"",
+            "name": "",
+            "type": "line"
+        },
+        {
+            "0": "B up (CL_f - 3\"/8)",
+            "name": "D",
+            "type": "point"
+        },
+        {
+            "0": "D",
+            "1": "D left 4\"",
+            "name": "_L0",
+            "type": "line"
+        },
+        {
+            "0": "B left AS_f up sqrt(SS_f^2 -AS_f^2) ",
+            "name": "E",
+            "type": "point"
+        },
+        {
+            "0": "B",
+            "1": "E",
+            "name": "",
+            "type": "line"
+        },
+        {
+            "0": "dist(E, C)",
+            "name": "_d1",
+            "type": "scaler"
+        },
+        {
+            "0": "E up _d1 right sqrt(SL^2 - _d1^2)",
+            "name": "F",
+            "type": "point"
+        },
+        {
+            "0": "F",
+            "1": "E",
+            "name": "",
+            "type": "line"
+        },
+        {
+            "0": "F",
+            "1": "F + rotate(E - F, 90deg)",
+            "name": "_L1",
+            "type": "line"
+        },
+        {
+            "0": "intersection(_L0, _L1)",
+            "name": "G",
+            "type": "point"
+        },
+        {
+            "0": "G + 0.5\" * dir(45deg)",
+            "name": "H",
+            "type": "point"
+        },
+        {
+            "0": "0.4",
+            "name": "cf1",
+            "type": "scaler"
+        },
+        {
+            "0": "1",
+            "name": "cf2",
+            "type": "scaler"
+        },
+        {
+            "0": "F",
+            "1": "F*(1-cf1) + G*(cf1)",
+            "2": "D*(1-cf2) + G*(cf2)",
+            "3": "D",
+            "name": "",
+            "type": "cubic_curve"
+        },
+        {
+            "0": "E down AHD",
+            "name": "I",
+            "type": "point"
+        },
+        {
+            "0": "I",
+            "1": "I left 2\"",
+            "name": "",
+            "type": "line"
+        },
+        {
+            "0": "I down 2\"",
+            "name": "J",
+            "type": "point"
+        },
+        {
+            "0": "J",
+            "1": "J left 2\"",
+            "name": "",
+            "type": "line"
+        },
+        {
+            "0": "(E + I)/2",
+            "name": "K",
+            "type": "point"
+        },
+        {
+            "0": "K vertical A",
+            "name": "L",
+            "type": "point"
+        },
+        {
+            "0": "K",
+            "1": "L",
+            "name": "",
+            "type": "line"
+        },
+        {
+            "0": "K right 0.5\"",
+            "name": "M",
+            "type": "point"
+        },
+        {
+            "0": "unit(B - E)*BD + E",
+            "name": "N",
+            "type": "point"
+        },
+        {
+            "0": "N vertical A",
+            "name": "O",
+            "type": "point"
+        },
+        {
+            "0": "O left BS",
+            "name": "P",
+            "type": "point"
+        },
+        {
+            "0": "O",
+            "1": "P",
+            "name": "",
+            "type": "line"
+        },
+        {
+            "0": "front bust - BS",
+            "name": "_PQ",
+            "type": "scaler"
+        },
+        {
+            "0": "y(J - P)",
+            "name": "_d3",
+            "type": "scaler"
+        },
+        {
+            "0": "P up _d3 left sqrt(_PQ^2 - _d3^2)",
+            "name": "Q",
+            "type": "point"
+        },
+        {
+            "0": "P",
+            "1": "Q",
+            "name": "",
+            "type": "line"
+        },
+        {
+            "0": "_PQ + 3\"/8",
+            "name": "_PR",
+            "type": "scaler"
+        },
+        {
+            "0": "y(I - P)",
+            "name": "_d4",
+            "type": "scaler"
+        },
+        {
+            "0": "P up _d4 left sqrt(_PR^2 - _d4^2)",
+            "name": "R",
+            "type": "point"
+        },
+        {
+            "0": "P",
+            "1": "R",
+            "name": "",
+            "type": "line"
+        },
+        {
+            "0": "R + SideL * unit(Q - R)",
+            "name": "S",
+            "type": "point"
+        },
+        {
+            "0": "R",
+            "1": "S",
+            "name": "",
+            "type": "line"
+        },
+        {
+            "0": "R + 0.5\" * unit(Q - R)",
+            "name": "T",
+            "type": "point"
+        },
+        {
+            "0": "10cm",
+            "name": "dp",
+            "type": "scaler"
+        },
+        {
+            "0": "B left dp",
+            "name": "U",
+            "type": "point"
+        },
+        {
+            "0": "U down 3\"/16",
+            "name": "V",
+            "type": "point"
+        },
+        {
+            "0": "S + unit(V - S) * (front waist - dp)",
+            "name": "W",
+            "type": "point"
+        },
+        {
+            "0": "V",
+            "1": "B",
+            "name": "",
+            "type": "line"
+        },
+        {
+            "0": "P + unit(W - P) * dist(P, V)",
+            "name": "X",
+            "type": "point"
+        },
+        {
+            "0": "S",
+            "1": "X",
+            "name": "",
+            "type": "line"
+        },
+        {
+            "0": "X",
+            "1": "P",
+            "name": "",
+            "type": "line"
+        },
+        {
+            "0": "V",
+            "1": "P",
+            "name": "",
+            "type": "line"
+        },
+        {
+            "0": "T + rotate(unit(R - T), 90deg) * 0.5\"",
+            "name": "Y",
+            "type": "point"
+        },
+        {
+            "0": "Y",
+            "1": "S",
+            "name": "",
+            "type": "line"
+        },
+        {
+            "0": "y(abs(M - E)) * 0.5",
+            "name": "_t2",
+            "type": "scaler"
+        },
+        {
+            "0": "Y",
+            "1": "Y + (T - Y) * 3",
+            "2": "M down _t2",
+            "3": "M",
+            "name": "",
+            "type": "cubic_curve"
+        },
+        {
+            "0": "E",
+            "1": "E",
+            "2": "M up _t2",
+            "3": "M",
+            "name": "",
+            "type": "cubic_curve"
+        },
+        {
+            "0": "dist(Y, S)",
+            "name": "length",
+            "type": "scaler"
+        }
+    ]
+}

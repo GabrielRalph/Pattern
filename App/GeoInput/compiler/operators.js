@@ -1,3 +1,5 @@
+import {Vector} from "../../SvgPlus/vector.js"
+
 function sqrt(v){return Math.sqrt(v)}
 function cos(x) {return Math.cos(x);}
 function sin(x) {return Math.sin(x);}
@@ -10,22 +12,6 @@ function clean(text) {
   return text;
 }
 
-
-class Vector{
-  constructor(x = 0, y = x) {
-    this.x = x;
-    this.y = y;
-  }
-
-
-  toString(dp = 5, split = ","){
-    return `${round(this.x, dp)}${split}${round(this.y, dp)}`
-  }
-
-  mult(b){
-    return new Vector(this.x*b.x, this.y*b.y);
-  }
-}
 
 class Operator {
   static OPERATORS = {
