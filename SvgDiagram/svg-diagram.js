@@ -14,6 +14,7 @@ class SvgDiagram extends SvgPlus {
   onconnect(){
     this.innerHTML = "";
     let svg = this.createChild("svg");
+    this.ondblclick = () => svg .saveSvg("pattern");
     let viewBox = new ViewBox(svg);
     viewBox.displayRealSize();
     viewBox.addPanAndZoomEvents(svg);
@@ -37,6 +38,7 @@ class SvgDiagram extends SvgPlus {
     let next = () => {
       if (this.render_flag) {
         this.render();
+        this.viewBox.updateSize();
         this.viewBox.updateViewBox();
         this.render_flag = false;
       }
@@ -72,7 +74,7 @@ class SvgDiagram extends SvgPlus {
       dotRadius: scale * 5,
       text: dispName(name),
       position: value.mul(1, -1),
-      textSize: 35 * scale,
+      textSize: 40 * scale,
       autoOffset: true,
     }))
   }
@@ -91,13 +93,17 @@ class SvgDiagram extends SvgPlus {
     }));
     let text = dispName(name);
     if (text !== "") {
-      let angle = ((new Vector(1, 0)).angleBetween(offset) * 180 / Math.PI) % 180;
-      let o1 = (new Vector(15 * scale, 0)).rotate((angle + 90) * Math.PI / 180).mul(1, -1);
+      offset.y *= -1;
+      let angle = ((new Vector(1, 0)).angleBetween(offset) * 180 / Math.PI) ;
+      console.log(angle);
+      // console.log(angle);
+      // angle = angle - 90;
+      let o1 = (new Vector(15 * scale, 0)).rotate(((angle + 90)) * Math.PI / 180);
       o1 = o1.add(p1.add(p2).div(2));
       this.svg.appendChild(new DotNote({
         text: text,
         textAnchor: "middle",
-        textSize: scale * 35,
+        textSize: scale * 40,
         rotation: angle,
         position: o1
       }))

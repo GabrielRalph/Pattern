@@ -98,6 +98,7 @@ class ViewBox {
     this.viewbox = [vpos, vsize];
   }
 
+
   set viewbox([pos, size]) {
     this._size = size;
     this._pos = pos;
@@ -151,7 +152,10 @@ class ViewBox {
   }
   drag(delta) {
     let [spos, ssize] = this.getScreenBBox();
-    delta = delta.mul(this.size.mul(this.scale)).div(ssize);
+    console.log(ssize);
+    console.log(this.size);
+    delta = delta.mul(this.size.div(ssize)).mul(this.scale);
+    console.log("delta = " + delta);
     this.offset = this.offset.sub(delta);
   }
   screenToSVG(p) {

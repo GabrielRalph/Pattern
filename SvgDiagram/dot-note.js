@@ -220,7 +220,7 @@ export class DotNote extends SvgPlus {
         "font-size": textSize,
         "text-anchor": anchor,
         "fill": this.textColor,
-        transform: `rotate(${-rot}) translate(${textPos})`
+        transform: `rotate(${rot}) translate(${textPos})`
       });
     }
 
