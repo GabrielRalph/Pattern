@@ -5,6 +5,11 @@ pattern-app {
   height: 100%;
 }
 
+pattern-app pre {
+  margin: 0;
+  font-size: 1.3em;
+}
+
 
 svg-diagram {
   display: block;

@@ -9,6 +9,7 @@ class PatternApp extends SvgPlus {
     let pattern = document.createElement("pattern-input");
     let diagram = document.createElement("svg-diagram");
     this.appendChild(diagram);
+    this.createChild("pre", {content: '×\n'})
     this.appendChild(pattern);
     diagram.data = pattern.data;
     pattern.oninput = () => {
