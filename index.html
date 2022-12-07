@@ -8,105 +8,19 @@
     <svg-diagram>
     </svg-diagram>
     <div>
-  
-      </div>
-    <vexp-text>
-      <div class = "rel">
-        <div class = "disp"></div>
-        <textarea name="pattern" rows="80" cols="50"></textarea>
-      </div>
-    </vexp-text>
+    </div>
+    <pattern-input></pattern-input>
 
   </body>
 
   <script type="module">
-    import {parse_expression, solve_expression} from "../VExp/vexp.js"
-    import {SvgDiagram} from "../SvgDiagram/svg-diagram.js"
-    let vexptext = document.querySelector("vexp-text");
+    import {SvgDiagram} from "./SvgDiagram/svg-diagram.js"
+    import {PatternInput} from "./App/pattern-input.js"
+    let pattern = document.querySelector("pattern-input");
     let diagram = document.querySelector("svg-diagram");
-    let text = vexptext.querySelector("textarea")
-    let copy = vexptext.querySelector(".disp")
-    let types = {
-      variable: {
-        params: 1,
-      },
-      point: {
-        params: 1,
-      },
-      line: {
-        params: 2,
-      },
-      cubic: {
-        params: 4,
-      }
-    }
-
-    function parseInput(text) {
-      let lines = text.split("\n");
-      let data = {};
-      let parami = 0;
-      let currentVar = [];
-      // console.log(currentVar.type);
-      let texthtml = "";
-      for (let line of lines) {
-        if (parami == 0) {
-          currentVar = [];
-          let match = line.match(/^(?:(\w+)\))?\s*([\w\s]+?)\s*=(.*)/);
-          if (match) {
-            let [m, type, name, exp] = match;
-            if (!type) type = "variable";
-            currentVar.type = type;
-            let params = types[type].params;
-            // console.log(type, params);
-            try {
-              let vexp = parse_expression(exp);
-              let value = solve_expression(vexp, data);
-              if (params == 1) {
-                value.type = type;
-                data[name] = value;
-                parami = 0;
-              } else {
-                currentVar.push(value);
-                parami = params;
-                data[name] = currentVar;
-              }
-              texthtml += line;
-              if (type == "variable") texthtml += " = " + Math.round(data[name].x*100)/100 ;
-              texthtml += "\n"
-            } catch (e) {
-              texthtml += "<error>"+ line + "</error>\n";
-              parami = 0;
-            }
-          }
-        } else if (currentVar.type in types){
-          try {
-            let vexp = parse_expression(line);
-            let value = solve_expression(vexp, data);
-            currentVar.push(value);
-            if (currentVar.length == parami) {
-              parami = 0;
-            }
-            texthtml += line + "\n";
-          } catch (e) {
-            parami = 0;
-            texthtml += "<error>"+ line + "</error>\n";
-
-          }
-        }
-      }
-      return [data, texthtml]
-    }
-    function updateText(value){
-      let [data, html] = parseInput(value);
-      diagram.data = data;
-      localStorage.setItem("pattern", value);
-      copy.innerHTML = html;
-    }
-
-    text.value = localStorage.getItem("pattern") || ""
-    updateText(text.value);
-    text.oninput = () => {
-      updateText(text.value)
+    diagram.data = pattern.data;
+    pattern.oninput = () => {
+      diagram.data = pattern.data;
     }
   </script>
 
@@ -129,7 +43,7 @@
       width: 100%;
       height: 100%;
     }
-    vexp-text {
+    pattern-input {
       /* overflow: hidden; */
       overflow-y: scroll;
       width: 100%;
@@ -139,28 +53,28 @@
       border-radius: 3px;
       height: 100%;
     }
-    vexp-text .rel {
+    pattern-input .rel {
       position: relative;
     }
-    vexp-text textarea{
+    pattern-input textarea{
       outline: none;
       border: none;
       max-height: 100%;
       padding: 0;
       font-size: 1em;
     }
-    vexp-text error {
+    pattern-input error {
       /* display: block; */
       background: #f005;
     }
-    vexp-text b {
+    pattern-input b {
       color: black;
     }
-    vexp-text .disp error:last-of-type {
+    pattern-input .display error:last-of-type {
       /* background: #0000; */
       border-bottom: 1px solid red;
     }
-    vexp-text .disp {
+    pattern-input .display {
       user-select: none;
       pointer-events: none;
       position: absolute;

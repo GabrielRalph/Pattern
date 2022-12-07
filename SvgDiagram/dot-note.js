@@ -220,7 +220,7 @@ export class DotNote extends SvgPlus {
         "font-size": textSize,
         "text-anchor": anchor,
         "fill": this.textColor,
-        transform: `rotate(${rot}) translate(${textPos})`
+        transform: `rotate(${-rot}) translate(${textPos})`
       });
     }
 
@@ -237,19 +237,19 @@ export class DotNote extends SvgPlus {
   }
 
   autoOffsetAdjust() {
-    let size = 3;
-    let recsize = new Vector(this.textSize);
-    let svg = this.ownerSVGElement;
-    for (let i = 0; i < size; i++) {
-      for (let j = 0; j < size; j++) {
-        let relp = new Vector((i - size/2), (j - size/2));
-        let recp = this.position.add(relp.mul(recsize));
-        let rect = svgRect(recp.x, recp.y, recsize.x, recsize.y, svg);
-        // console.log(rect);
-        // console.log(this.ownerSVGElement);
-        let enclosed = svg.getIntersectionList(rect, svg);
-        console.log(enclosed);
-      }
-    }
+    // let size = 3;
+    // let recsize = new Vector(this.textSize);
+    // let svg = this.ownerSVGElement;
+    // for (let i = 0; i < size; i++) {
+    //   for (let j = 0; j < size; j++) {
+    //     let relp = new Vector((i - size/2), (j - size/2));
+    //     let recp = this.position.add(relp.mul(recsize));
+    //     let rect = svgRect(recp.x, recp.y, recsize.x, recsize.y, svg);
+    //     // console.log(rect);
+    //     // console.log(this.ownerSVGElement);
+    //     let enclosed = svg.getIntersectionList(rect, svg);
+    //     console.log(enclosed);
+    //   }
+    // }
   }
 }
