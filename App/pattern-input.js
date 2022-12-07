@@ -47,7 +47,7 @@ class PatternInput extends SvgPlus {
     for (let line of lines) {
       if (parami == 0) {
         currentVar = [];
-        let match = line.match(/^(?:(\w+)\)?)?\s*([\w\s]+?)\s*=(.*)/);
+        let match = line.match(/^(?:(\w+)\))?\s*([\w\s]+?)\s*=(.*)/);
         if (match) {
           let [m, type, name, exp] = match;
           if (!type) type = "variable";
