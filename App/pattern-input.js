@@ -1,43 +1,41 @@
 import {SvgPlus, Vector} from "../SvgPlus/4.js"
 import {parse_expression, solve_expression, UNITS} from "../VExp/vexp.js"
 
-const demo = `sl = 102cm   //  side length
-cd = 28cm    //  crotch depth
-hips = 101cm  //  hip circumference
-waist = 84cm //  waist circumference
-hd = 18.5cm  //  hip depth
+const demo = `// Dimensions that may change with anthro measurements
+sl = 102cm   //  side length
+cd = 29cm    //  crotch depth
+hips = 90cm  //  hip circumference
+waist = 65cm //  waist circumference
+hd = 15cm  //  hip depth
 
-h2wr = 100cm * (1 - waist/hips)
-
+// Design parameters
 wla = 3deg      // wide leg angle
 fls = 15cm      // flared leg size
 fla = 9deg      // flared leg angle
 rd = fls - 2cm  // fillet length
-di = 3cm        // intake (pleats)
 dis = 14cm      // intake start
 sf = 87/84      // stretch factor across warp
-bsa = 5deg      // back seat angle
+
 
 bh = (hips/2 + 2cm)/2 // back hips
 fh = hips/2 - bh      // front hips
 bw = waist/(4 * sf)   // back waist
 fw = waist/(4 * sf)   // front waist
 
-
-
-
-
 fcext = fh/4 // front crotch extension
 bcext = bh/2  // back crotch extension
 
+// Uncomment for front
 //bw = fw
 //bh = fh
 //bcext = fcext
 
-di = roundcm(2 * (bh - bw) / 2.5) / 2
-tint = ((bh - bw) - di) / 2 //    total req. intake
-bsa = atan(tint * 2 / cd)
+// calculate dart intake
+di = roundcm(2 * (bh - bw) / 2.5) / 2 // dart intake
+tint = ((bh - bw) - di) / 2 //           total req. intake
+bsa = atan(tint * 2 / cd) //             back to seat angle
 
+// Draft Wide Leg with Flare
 point) a = 0
 point) b = a down sl
 point) c = a down cd right 0.5cm
@@ -138,7 +136,7 @@ m
 
 line) _cs1 = i2
 x
-line) pleat = d2
+line) _pleat = d2
 d1
 line) _p1 = d2
 d2 down 3cm
@@ -149,7 +147,7 @@ d2 right di/2 down 3cm
 line) _p4 = d1 left di/2
 d1 left di/2 down 3cm
 
-line) X = (l + m)/2
+line) __ = (l + m)/2
 (l + m)/2 up sl`
 
 const types = {
