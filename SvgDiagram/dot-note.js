@@ -10,12 +10,14 @@ const DotNoteProps = [
   "startOffsetTangent",
   "endOffsetTangent",
   "textAnchor",
+  "textLocation",
   "textColor",
   "strokeWidth",
   "color",
   "opacity",
   "rotation",
   "autoOffset",
+  // "verticalAlign"
 ];
 
 const SVG = new SvgPlus("svg");
@@ -46,12 +48,14 @@ export class DotNote extends SvgPlus {
     this.offset = null;
     this.offsetDotRadius = 0;
     this.startOffsetTangent = 0;
+    this.textLocation = 0.5;
     this.endOffsetTangent = 0;
     this.textAnchor = "start";
     this.textColor = "black";
     this.autoOffset = false;
     this.color = "black";
     this.class = "d-note";
+    // this.verticalAlign = "middle"
 
     this.apply(dotNote);
   }
@@ -142,6 +146,14 @@ export class DotNote extends SvgPlus {
   }
   get textAnchor(){return this._textAnchor;}
 
+  set verticalAlign(value){
+    if (value instanceof Vector) {
+      this._verticalAlign = value;
+    }
+  }
+  get verticalAlign(){return this._verticalAlign;}
+
+
   set autoOffset(value){
 
 
@@ -181,7 +193,9 @@ export class DotNote extends SvgPlus {
         stroke: this.color,
         opacity: this.opacity
       })
-      textPos = textPos.add(offset);
+
+
+      textPos = textPos.add(offset.mul(this.textLocation));
 
       // add offset dot if applicable
       let or = this.offsetDotRadius;
@@ -201,9 +215,9 @@ export class DotNote extends SvgPlus {
     let textSize = this.textSize;
     if (textSize > 0) {
       if (textPos.isNaN || textPos.isZero) textPos = new Vector(0);
-      let anchor = this.textAnchor;
-      if (anchor !== "middle") textPos.y += textSize * this.centerTextRatio;
+      textPos.y += textSize * this.centerTextRatio;
 
+      let anchor = this.textAnchor;
       if (!r.isNaN && !r.isZero) {
         if (anchor == "start") {
           textPos.x += r.x * 2;
@@ -213,6 +227,7 @@ export class DotNote extends SvgPlus {
           textPos.y += r.y * 2;
         }
       }
+      console.log(this.text);
 
       let rot = this.rotation;
       let text = this.createChild("text", {
@@ -229,11 +244,11 @@ export class DotNote extends SvgPlus {
       transform: `translate(${pos})`
     }
 
-    if (this.autoOffset) {
-      setTimeout(() => {
-        this.autoOffsetAdjust();
-      }, 1000)
-    }
+    // if (this.autoOffset) {
+    //   setTimeout(() => {
+    //     this.autoOffsetAdjust();
+    //   }, 1000)
+    // }
   }
 
   autoOffsetAdjust() {

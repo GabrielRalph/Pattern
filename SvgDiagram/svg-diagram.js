@@ -27,6 +27,7 @@ class SvgDiagram extends SvgPlus {
   }
 
   set data(value){
+    // console.log(value);
     this.render_flag = true;
     this._data = value;
   }
@@ -56,12 +57,11 @@ class SvgDiagram extends SvgPlus {
     for (let name in data) {
       let value = data[name];
       let render_method = "render_" + value.type;
-      if (this[render_method] instanceof Function) {
-        try {
-          this[render_method](value, name);
-        } catch(e) {
-          errors.push(value);
-        }
+      try {
+        this[render_method](value, name);
+      } catch(e) {
+        console.log(e);
+        errors.push(value);
       }
     }
   }
@@ -70,13 +70,29 @@ class SvgDiagram extends SvgPlus {
 
   render_point(value, name) {
     let scale = this.viewBox.scale;
-    this.svg.appendChild(new DotNote({
+    let note = new DotNote({
       dotRadius: scale * 5,
       text: dispName(name),
       position: value.mul(1, -1),
       textSize: 40 * scale,
       autoOffset: true,
-    }))
+    });
+    console.log(note);
+    this.svg.appendChild(note);
+  }
+
+  render_arc(value, name) {
+    let scale = this.viewBox.scale;
+
+    let start = value[0].mul(1, -1);
+    let end = value[4].mul(1, -1);
+
+    this.svg.createChild("path", {
+      d: `M${start}A${value[1]},${value[2].x},${value[3]},${end}`,
+      stroke: "black",
+      fill: "none",
+      "stroke-width": scale * 3
+    });
   }
 
   render_line(value, name) {
@@ -111,6 +127,7 @@ class SvgDiagram extends SvgPlus {
   }
 
   render_cubic(value) {
+    let scale = this.viewBox.scale;
     let points = []
     for (let i = 0; i < 4; i++) {
       let v = value[i];
@@ -122,7 +139,7 @@ class SvgDiagram extends SvgPlus {
       d: `M${points[0]}C${points[1]},${points[2]},${points[3]}`,
       stroke: "black",
       fill: "none",
-
+      "stroke-width": scale * 3
     });
   }
 }

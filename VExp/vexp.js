@@ -1,7 +1,10 @@
 import {Operator, Vector} from "./operators.js"
+import {getLength, getPath} from "./length.js"
 function sqrt(v){return Math.sqrt(v)}
 function cos(x) {return Math.cos(x);}
+function round(x) {return Math.round(x);}
 function tan(x) {return Math.tan(x);}
+function atan(x) {return Math.atan(x);}
 function asin(x) {return Math.asin(x);}
 function acos(x) {return Math.acos(x);}
 function abs(x) {return Math.abs(x);}
@@ -26,9 +29,17 @@ const FUNCTIONS = {
     let v = solveVector(a, data);
     return new Vector(sin(v.x), sin(v.y))
   },
+  "roundcm": (a, data) => {
+    let v = solveVector(a, data);
+    return new Vector(CM * round(v.x/CM), CM * round(v.y/CM))
+  },
   "tan": (a, data) => {
     let v = solveVector(a, data);
     return new Vector(tan(v.x), tan(v.y))
+  },
+  "atan": (a, data) => {
+    let v = solveVector(a, data);
+    return new Vector(atan(v.x), atan(v.y))
   },
   "asin": (a, data) => {
     let v = solveVector(a, data);
@@ -64,6 +75,22 @@ const FUNCTIONS = {
     return res;
   },
 
+  "pointoncurve": (a, data) => {
+    console.log(a);
+    // try{
+      let args = a.split(/\s*,\s*/);
+      let path = data[args[0]]
+      let length = solveVector(args[1], data)
+      console.log(length);
+
+      path = getPath.apply(null, path);
+      return new Vector(path.getPointAtLength(length.x));
+    // } catch (e) {
+    //   console.log(e);
+    // }
+
+  },
+
   "intersection": (a, data) => {
     let lines = a.split(/\s*,\s*/g);
     let l0 = data[lines[0]];
@@ -73,6 +100,23 @@ const FUNCTIONS = {
       res = Vector.intersection(l0[0], l0[1], l1[0], l1[1]);
     }
     return res;
+  },
+
+  "intercept": (text, data) => {
+    let [a0, a, b0, b] = parseVArgs(text, data);
+    if (a.x == 0) a.x = 0.000000001
+    if (b.x == 0) b.x = 0.000000001
+    let m1 = a.y / a.x;
+    let m2 = b.y / b.x;
+    // if (a.x == 0) m1 = 1e36;
+    // if (b.x == 0) m2 = 1e36;
+
+    let c1 = a0.y - a0.x * m1;
+    let c2 = b0.y - b0.x * m2;
+    let x = (c1 - c2) / (m2 - m1);
+    let y = c1 + x * m1;
+    console.log(m1, c1);
+    return new Vector(x,y);
   },
 
   "unit": (a, data) => {
@@ -107,8 +151,27 @@ const FUNCTIONS = {
   "y": (a, data) => {
     let v = solveVector(a, data);
     return new Vector(v.y, v.y)
+  },
+
+  "length": (a, data) => {
+    let elem = data[a];
+    let len = getLength.apply(null, elem);
+    return new Vector(len, len);
   }
+
 }
+
+function parseVArgs(text, data) {
+  let split = parse_expression(text);
+  split = split_expressions(split);
+  let args = [];
+  for (let exp of split) {
+    let p1 = solve_expression(exp, data);
+    args.push(p1);
+  }
+  return args;
+}
+
 
 let f_regex = "";
 // /(sin|cos|abs|sqrt|dir)/g
