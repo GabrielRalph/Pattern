@@ -60,7 +60,7 @@ class SvgDiagram extends SvgPlus {
       try {
         this[render_method](value, name);
       } catch(e) {
-        console.log(e);
+        // console.log(render_method, e);
         errors.push(value);
       }
     }
@@ -77,7 +77,6 @@ class SvgDiagram extends SvgPlus {
       textSize: 40 * scale,
       autoOffset: true,
     });
-    console.log(note);
     this.svg.appendChild(note);
   }
 

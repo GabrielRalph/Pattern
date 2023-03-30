@@ -1,5 +1,5 @@
 import {SvgPlus, Vector} from "../SvgPlus/4.js"
-import {parse_expression, solve_expression, UNITS} from "../VExp/vexp.js"
+import {parseVExp, parse_expression, parseVArgs, solve_expression, UNITS} from "../VExp/vexp.js"
 
 const demo = `// Dimensions that may change with anthro measurements
 sl = 102cm   //  side length
@@ -153,6 +153,9 @@ line) __ = (l + m)/2
 const types = {
   variable: {
     params: 1,
+    make: () => {
+
+    }
   },
   point: {
     params: 1,
@@ -201,10 +204,13 @@ class PatternInput extends SvgPlus {
 
 
   parsePatternText2(text) {
-    let exps = text.split(/(?<![({][^})]*)(,|\n)(?![^({})]*[})])/gm);
+    // let exps = text.split(/(?<![({][^})]*)(,|\n)(?![^({})]*[})])/gm);
     // for (let i = 0; i++)
-  }
+    // console.log(`^${Object.keys(types).join("|")})[)]?\s*(?:[\w)]+(?:\s+\w+)*)`, "g");
 
+    let vexp = parseVExp(text);
+    console.log(vexp);
+  }
   parsePatternText(text) {
     let lines = text.split("\n");
     let data = {};
@@ -264,7 +270,7 @@ class PatternInput extends SvgPlus {
           }
           el.innerHTML = line;
         } catch (e) {
-          console.log(e);
+          // console.log(e
           parami = 0;
           el.createChild("error", {content: line})
         }
@@ -288,7 +294,28 @@ class PatternInput extends SvgPlus {
 
   get data(){
     let text = this.text;
-    let data = this.parsePatternText(text);
+    // let data = this.parsePatternText(text);
+    this.display.innerHTML = "";
+    let [data, display] = parseVExp(text);
+    let i = 0;
+    for (let line of text.split('\n')) {
+      if (line === "") line = "<br>"
+      let disp = display[i];
+      let value = ""
+      if (disp instanceof Error) {
+        value = disp.message
+        line = `<error>${line}</error>`
+      } else if (disp) {
+        value = disp;
+      }
+      this.display.createChild("div", {
+        content: line,
+        value: value,
+      })
+      i++;
+    }
+
+
     return data;
   }
 

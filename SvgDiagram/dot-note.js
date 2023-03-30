@@ -227,7 +227,6 @@ export class DotNote extends SvgPlus {
           textPos.y += r.y * 2;
         }
       }
-      console.log(this.text);
 
       let rot = this.rotation;
       let text = this.createChild("text", {

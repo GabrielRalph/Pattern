@@ -76,12 +76,12 @@ const FUNCTIONS = {
   },
 
   "pointoncurve": (a, data) => {
-    console.log(a);
+    // console.log(a);
     // try{
       let args = a.split(/\s*,\s*/);
       let path = data[args[0]]
       let length = solveVector(args[1], data)
-      console.log(length);
+      // console.log(length);
 
       path = getPath.apply(null, path);
       return new Vector(path.getPointAtLength(length.x));
@@ -115,7 +115,6 @@ const FUNCTIONS = {
     let c2 = b0.y - b0.x * m2;
     let x = (c1 - c2) / (m2 - m1);
     let y = c1 + x * m1;
-    console.log(m1, c1);
     return new Vector(x,y);
   },
 
@@ -160,13 +159,107 @@ const FUNCTIONS = {
   }
 
 }
+const TYPES = {
+  variable: {
+    params: 1,
+    make: () => {
+
+    }
+  },
+  point: {
+    params: 1,
+  },
+  line: {
+    params: 2,
+  },
+  cubic: {
+    params: 4,
+  },
+  arc: {
+    params: 5
+  }
+}
+
+function parseVExp(text) {
+  let line = [];
+  let lnum = 0;
+  let charnum = 0;
+  let display = [];
+  for (let char of text) {
+    line.push(lnum);
+    charnum++;
+    if (char === '\n') {
+      lnum++;
+      charnum = 0;
+      display.push(null)
+    }
+  }
+
+  // look for all variable asignments
+  //   definition   value
+  // "something = " "9.5"
+  let regexp = /(?:^|\n)([\w)]+(?:\s+\w+)*)\s*=\s*/g
+  let defs = text.matchAll(regexp);
+  defs = [...defs];
+  let values = text.split(/(?:^|\n)(?:[\w)]+(?:\s+\w+)*)\s*=\s*/g);
+  let i = 1;
+
+
+  // for every variable definition
+  let data = {};
+  let typeregexp = new RegExp(`(${Object.keys(TYPES).join("|")})[)]?\\s+([\\w)]+(?:\\s+\\w+)*)`);
+  for (let match of defs) {
+    let start = match.index + 1;
+    console.log(values[i]);
+    let end = start + match.length - 1;
+    let name = match[1];
+
+    // check for variable type
+    let type = "variable";
+    let mtype = name.match(typeregexp);
+    if (mtype !== null) {
+      type = mtype[1];
+      name = mtype[2];
+    }
+
+
+    // parse vector arguments
+    let disp = null;
+    try {
+      // remove comments
+      let text = values[i].replace(/(~~|\/\/).*([^\n]|$)/g, "");
+      text = text.replace(/\n+$/, "");
+
+      let args = parseVArgs(text, data);
+      if (args.length == 1) args = args[0];
+      args.type = type;
+      data[name] = args;
+
+      if (args instanceof Vector) {
+        disp = "" + args;
+      }
+
+    // vexp error handled
+    } catch (e) {
+      disp = e;
+    }
+
+    for (let ln  = line[start]; ln <= line[end]; ln++){
+      display[ln] = disp;
+    }
+    i++;
+  }
+  return [data, display];
+}
 
 function parseVArgs(text, data) {
   let split = parse_expression(text);
-  split = split_expressions(split);
+  split = split_expressions(split, /[,\n]/g);
+  // console.log(split);
   let args = [];
   for (let exp of split) {
-    let p1 = solve_expression(exp, data);
+    let p1 = exp;
+    p1 = solve_expression(exp, data);
     args.push(p1);
   }
   return args;
@@ -271,12 +364,16 @@ function find_bracket_intervals(text) {
 
   }
 
+  let e = null
   if (open < 0) {
-    throw new ExpError("bracket", "bracket missmatch, to many closing brackets");
+    e = new ExpError("bracket", "bracket missmatch, to many closing brackets");
   }else if (open > 0) {
-    throw new ExpError("bracket", "bracket missmatch, to many opening brackets");
+    e = new ExpError("bracket", "bracket missmatch, to many opening brackets");
   }
-
+  if (e != null) {
+    e.text = text;
+    throw e;
+  }
 
   return intvs;
 }
@@ -531,6 +628,7 @@ function make_vector_expression(text, tempData, data) {
       if (num == null) {
         let e = new ExpError("variable", `'${vop}' not a number, variable or operator`);
         e.vname = vop;
+        e.text = text;
         throw  e;
       } else {
         vec = new Vector(num);
@@ -623,4 +721,6 @@ function solveVector(params, data) {
 }
 
 
-export {solveVector, parse_expression, solve_expression, Vector, UNITS}
+
+
+export {parseVExp,parseVArgs, solveVector, parse_expression, solve_expression, Vector, UNITS}
