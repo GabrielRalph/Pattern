@@ -88,8 +88,10 @@ class SvgDiagram extends SvgPlus {
 
     this.svg.createChild("path", {
       d: `M${start}A${value[1]},${value[2].x},${value[3]},${end}`,
-      stroke: "black",
-      fill: "none",
+      style: {
+        stroke: "var(--c1)",
+        fill: "none",
+      },
       "stroke-width": scale * 3
     });
   }
@@ -136,8 +138,10 @@ class SvgDiagram extends SvgPlus {
 
     this.svg.createChild("path", {
       d: `M${points[0]}C${points[1]},${points[2]},${points[3]}`,
-      stroke: "black",
-      fill: "none",
+      style: {
+        stroke: "var(--c1)",
+        fill: "none",
+      },
       "stroke-width": scale * 3
     });
   }

@@ -51,9 +51,9 @@ export class DotNote extends SvgPlus {
     this.textLocation = 0.5;
     this.endOffsetTangent = 0;
     this.textAnchor = "start";
-    this.textColor = "black";
+    this.textColor = "var(--c1)";
     this.autoOffset = false;
-    this.color = "black";
+    this.color = "var(--c1)";
     this.class = "d-note";
     // this.verticalAlign = "middle"
 
@@ -190,7 +190,9 @@ export class DotNote extends SvgPlus {
       this.createChild("path", {
         d: `M${textPos}c${this.startOffsetTangent},${offset.add(this.endOffsetTangent)},${offset}`,
         "stroke-width": this.strokeWidth,
-        stroke: this.color,
+        style: {
+          stroke: this.color,
+        },
         opacity: this.opacity
       })
 
@@ -203,7 +205,9 @@ export class DotNote extends SvgPlus {
         this.createChild("ellipse", {
           rx: or.x,
           ry: or.y,
-          fill: this.color,
+          style: {
+            fill: this.color,
+          },
           cx: textPos.x,
           cy: textPos.y,
           opacity: this.opacity
@@ -233,7 +237,9 @@ export class DotNote extends SvgPlus {
         content: this.text,
         "font-size": textSize,
         "text-anchor": anchor,
-        "fill": this.textColor,
+        style: {
+          "fill": this.textColor,
+        },
         transform: `rotate(${rot}) translate(${textPos})`
       });
     }
