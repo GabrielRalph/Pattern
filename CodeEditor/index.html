@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <script type="module" src="./code-editor.js"></script>
+    <script type="module" src="../SvgDiagram/svg-diagram.js"></script>
+  </head>
+  <body>
+    <svg-diagram></svg-diagram>
+    <code-editor>e</code-editor>
+  </body>
+
+  <script type = "module">
+    import {FUNCTIONS, UNITS, Operator, TYPES, parseVExp, creg} from "../VEXP/vexp.js"
+    let units = Object.keys(UNITS);
+    let text = localStorage.getItem('code');
+    let ce = document.querySelector('code-editor');
+    let dg = document.querySelector('svg-diagram');
+
+    ce.input.value = text;
+    ce.inputChange();
+
+    console.log(creg.source);
+    console.log({creg});
+    let base = [
+      {
+        regexp: `(?<=^|\\W|\\n)\\d+(?:\\.\d+)?([eE]-?\d+)?(\\s*(${units.join("|")}))?(?=$|\\W|\\n)`,
+        class: "u",
+      },
+      {
+        regexp: `(?<=^|\\n|\\W)(${Object.keys(FUNCTIONS).join("|")})(?=\\s*\\()`,
+        class: "f",
+      },
+      {
+        regexp: `(?<=^|\\n)(${Object.keys(TYPES).join("|")})(?=$|\\W|\\n|\\))`,
+        class: "v"
+      },
+      {
+        regexp: creg.source,
+        class: "cc"
+      }
+    ];
+    ce.syntaxes = base;
+
+    ce.onchangeend = (text) => {
+      localStorage.setItem('code', text)
+      let ressyn = [];
+      let [data, display] = parseVExp(text);
+      dg.data = data;
+      console.log(display);
+      for (let vname in data) {
+        ressyn.push({
+          regexp: `(?<=^|\\n|\\W)${vname}(?=$|\\W|\\n|\\))`,
+          value: data[vname] + "",
+          class: "vi"
+        });
+      }
+      for (let [start, end, e] of display) {
+          ressyn.push({
+            regexp: [start, end],
+            value: e.message,
+            class: "error"
+          });
+      }
+      ce.syntaxes = base.concat(ressyn);
+      console.log(data, display);
+    }
+
+  </script>
+  <style>
+    svg-diagram {
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 60vw;
+      display: block;
+    }
+
+    code-editor {
+      font-family: monospace;
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      display: block;
+      width: 40vw;
+      border: 1px solid beige;
+      font-size: 1.5em;
+      --margin: 10px;
+    }
+    .rel {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: scroll;
+    }
+    code-editor .info {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      min-height: 1em;
+      border-radius: 1em;
+      background: #0005;
+      margin: var(--margin);
+    }
+    code-editor .output {
+      white-space: pre-wrap;
+      overflow-wrap: break-word;
+      position: absolute;
+      top: 0;
+      right: 0;
+      left: 0;
+      bottom: 0;
+      z-index: -1;
+      padding: var(--margin);
+
+    }
+    code-editor textarea {
+      border: none;
+      outline: none;
+      background: transparent;
+      font-family: inherit;
+      font-size: inherit;
+      margin: 0;
+      color: #0002;
+      resize: none;
+      caret-color: black;
+      padding: var(--margin);
+
+    }
+    hl.v {
+      color: #b456da;
+    }
+    hl.u {
+      color: #f47a0d;
+    }
+    hl.f {
+      color: #1a7eca;
+    }
+    hl.error {
+      text-decoration: underline;
+      text-decoration-color: red;
+    }
+    hl.vi {
+      color: green;
+    }
+    hl.cc {
+      color: grey;
+    }
+    hl.cc hl {
+      color: inherit;
+    }
+
+
+  </style>
+</html>

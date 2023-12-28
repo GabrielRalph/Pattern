@@ -13,7 +13,7 @@ class SvgDiagram extends SvgPlus {
 
   onconnect(){
     this.innerHTML = "";
-    let svg = this.createChild("svg");
+    let svg = this.createChild("svg", {styles: {width: "100%", height: "100%"}});
     this.ondblclick = () => svg .saveSvg("pattern");
     let viewBox = new ViewBox(svg);
     viewBox.displayRealSize();

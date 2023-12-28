@@ -46,6 +46,12 @@ const FUNCTIONS = {
     return new Vector(asin(v.x), asin(v.y))
   },
 
+  "norm": (a, data) => {
+    let v = solveVector(a, data);
+    let n = v.norm();
+    return new Vector(n, n)
+  },
+
   "cos": (a, data) => {
     let v = solveVector(a, data);
     return new Vector(cos(v.x), cos(v.y))
@@ -74,7 +80,14 @@ const FUNCTIONS = {
     let res = p1.rotate(p2.x);
     return res;
   },
+  "angleBetween": (a, data) => {
+    let split = parse_expression(a);
+    split = split_expressions(split);
+    let p1 = solve_expression(split[0], data);
+    let p2 = solve_expression(split[1], data);
 
+    return new Vector(p1.angleBetween(p2))
+  },
   "pointoncurve": (a, data) => {
     // console.log(a);
     // try{
@@ -136,6 +149,20 @@ const FUNCTIONS = {
     let p2 = solve_expression(split[1], data);
     return new Vector(p1.dist(p2));
   },
+  "reflectx": (a, data) => {
+    let split = parse_expression(a);
+    split = split_expressions(split);
+    let p1 = solve_expression(split[0], data);
+    let p2 = solve_expression(split[1], data);
+    return p1.sub(p2).mul(new Vector(-1, 1)).add(p2);
+  },
+  "reflecty": (a, data) => {
+    let split = parse_expression(a);
+    split = split_expressions(split);
+    let p1 = solve_expression(split[0], data);
+    let p2 = solve_expression(split[1], data);
+    return p1.sub(p2).mul(new Vector(1, -1)).add(p2);
+  },
 
   "dir": (a, data) => {
     let v = solveVector(a, data);
@@ -166,6 +193,9 @@ const TYPES = {
 
     }
   },
+  param: {
+    prams: 1,
+  },
   point: {
     params: 1,
   },
@@ -180,38 +210,42 @@ const TYPES = {
   }
 }
 
+function lines(text) {
+  return text.matchAll("\n").length;
+}
+
+const creg = new RegExp("(;|~~|\/\/)([^\n]*)(?=[^\n]|$)", "gm");
+function extractInfo(text){
+  let cmnts = text.matchAll(creg);
+  text = text.replace(creg, "");
+  text = text.replace(/\n+$/, "");
+
+  let ctext = "";
+  for (let c of cmnts) ctext += c[2];
+
+  console.log(ctext);
+  return [text, ctext]
+}
+
 function parseVExp(text) {
-  let line = [];
-  let lnum = 0;
-  let charnum = 0;
   let display = [];
-  for (let char of text) {
-    line.push(lnum);
-    charnum++;
-    if (char === '\n') {
-      lnum++;
-      charnum = 0;
-      display.push(null)
-    }
-  }
+
 
   // look for all variable asignments
   //   definition   value
   // "something = " "9.5"
-  let regexp = /(?:^|\n)([\w)]+(?:\s+\w+)*)\s*=\s*/g
+  let regexp = /(?:^|\n)([\w)]+(?:\s+\w+)*)\s*=\s*/gm
   let defs = text.matchAll(regexp);
   defs = [...defs];
-  let values = text.split(/(?:^|\n)(?:[\w)]+(?:\s+\w+)*)\s*=\s*/g);
+  let values = text.split(/(?:^|\n)(?:[\w)]+(?:\s+\w+)*)\s*=\s*/gm);
   let i = 1;
-
 
   // for every variable definition
   let data = {};
   let typeregexp = new RegExp(`(${Object.keys(TYPES).join("|")})[)]?\\s+([\\w)]+(?:\\s+\\w+)*)`);
   for (let match of defs) {
     let start = match.index + 1;
-    console.log(values[i]);
-    let end = start + match.length - 1;
+    let end = start + match[0].length + values[i].length - 2;
     let name = match[1];
 
     // check for variable type
@@ -227,32 +261,32 @@ function parseVExp(text) {
     let disp = null;
     try {
       // remove comments
-      let text = values[i].replace(/(~~|\/\/).*([^\n]|$)/g, "");
-      text = text.replace(/\n+$/, "");
+      let [text, info] = extractInfo(values[i]);
 
       let args = parseVArgs(text, data);
+      if (args == null) {
+        throw new ExpError("assignment","Invalid asignment of " + name);
+      }
       if (args.length == 1) args = args[0];
       args.type = type;
-      data[name] = args;
+      args.info = info;
 
-      if (args instanceof Vector) {
-        disp = "" + args;
-      }
+      data[name] = args;
 
     // vexp error handled
     } catch (e) {
-      disp = e;
-    }
-
-    for (let ln  = line[start]; ln <= line[end]; ln++){
-      display[ln] = disp;
+      display.push([start, end, e])
     }
     i++;
   }
+  console.log(display);
   return [data, display];
 }
 
 function parseVArgs(text, data) {
+  if (text.match(/^[\s\n]*$/)) {
+    return null;
+  }
   let split = parse_expression(text);
   split = split_expressions(split, /[,\n]/g);
   // console.log(split);
@@ -611,11 +645,11 @@ function make_vector_expression(text, tempData, data) {
     let strv = "v";
     // replace temp data
     if (tempData[vop] instanceof Vector) {
-      vec = tempData[vop];
+      vec = tempData[vop].clone();
 
     // replace data
   } else if (data[vop] instanceof Vector) {
-      vec = data[vop];
+      vec = data[vop].clone();
 
     // ignore operators
     } else if (Operator.is(vop)) {
@@ -723,4 +757,4 @@ function solveVector(params, data) {
 
 
 
-export {parseVExp,parseVArgs, solveVector, parse_expression, solve_expression, Vector, UNITS}
+export {parseVExp,parseVArgs, solveVector, parse_expression, solve_expression, Vector, UNITS, FUNCTIONS, Operator, TYPES, BRACKETS, creg}

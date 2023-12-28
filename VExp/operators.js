@@ -44,6 +44,7 @@ class Operator {
   }
   static TEXT_OPERATORS = {
     "dot": true,
+    "cross": true,
     "vertical": true,
     "horizontal": true,
   }
@@ -81,7 +82,6 @@ class Operator {
       return new Vector(dot, dot);
     },
     "×": (a, b) => {
-      console.log(a, b);
       return new Vector(a.x * b.x - a.y * b.y, a.x * b.y + a.y * b.x);
     },
 
