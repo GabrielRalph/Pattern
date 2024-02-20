@@ -181,7 +181,8 @@ const FUNCTIONS = {
 
   "length": (a, data) => {
     let elem = data[a];
-    let len = getLength.apply(null, elem);
+    console.log(elem);
+    let len = getLength(elem)
     return new Vector(len, len);
   }
 
@@ -207,6 +208,9 @@ const TYPES = {
   },
   arc: {
     params: 5
+  },
+  rectangle: {
+    params: 3
   }
 }
 
@@ -223,7 +227,6 @@ function extractInfo(text){
   let ctext = "";
   for (let c of cmnts) ctext += c[2];
 
-  console.log(ctext);
   return [text, ctext]
 }
 
@@ -279,7 +282,6 @@ function parseVExp(text) {
     }
     i++;
   }
-  console.log(display);
   return [data, display];
 }
 
@@ -317,6 +319,15 @@ const UNITS = {
   "cm": CM,
   "deg": Math.PI/180,
   "rad": 1,
+  "pi": Math.PI,
+  "π": Math.PI,
+  "PI": Math.PI
+
+}
+const CONSTANTS = {
+  pi: Math.PI,
+  π: Math.PI,
+  PI: Math.PI
 }
 
 class ExpError extends Error {
@@ -332,7 +343,9 @@ function get_unit_number(line){
   if (!Number.isNaN(num)) {
     let unit = line.replace(""+num, "");
     if (unit in UNITS) num *= UNITS[unit];
-  } else {
+  } else if (line in CONSTANTS) {
+    num = CONSTANTS[line];
+  }else{
     num = null;
   }
   return num;
@@ -757,4 +770,4 @@ function solveVector(params, data) {
 
 
 
-export {parseVExp,parseVArgs, solveVector, parse_expression, solve_expression, Vector, UNITS, FUNCTIONS, Operator, TYPES, BRACKETS, creg}
+export {parseVExp,parseVArgs, solveVector, parse_expression, solve_expression, Vector, UNITS, FUNCTIONS, Operator, TYPES, BRACKETS, CONSTANTS, creg}

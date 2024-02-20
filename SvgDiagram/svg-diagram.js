@@ -96,6 +96,26 @@ class SvgDiagram extends SvgPlus {
     });
   }
 
+  render_rectangle(value, name) {
+    let scale = this.viewBox.scale;
+    let o = value[0].mul(1, -1);
+    if (!value[2]) value[2] = new Vector(0)
+
+    this.svg.createChild("rect", {
+      x: o.x,
+      y: o.y,
+      rx: value[2].x,
+      ry: value[2].y,
+      width: value[1].x,
+      height: value[1].y,
+      style: {
+        stroke: "var(--c1)",
+        fill: "none",
+      },
+      "stroke-width": scale * 3
+    });
+  }
+
   render_line(value, name) {
     let scale = this.viewBox.scale;
 

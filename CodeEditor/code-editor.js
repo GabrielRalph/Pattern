@@ -105,7 +105,6 @@ class CodeEditor extends SvgPlus {
         case "string":
           let matches = text.matchAll(new RegExp(syntax.regexp, "gm"));
           for (let match of matches) {
-            console.log(syntax.regexp, match);
             let start = match.index;
             let end = start + match[0].length;
             intervals.push([start, si, 0]);

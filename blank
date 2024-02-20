@@ -1,0 +1,38 @@
+definition: type vname | vname
+
+asignment: definition = expression | definition = (expression, expression, ...)
+
+expression: value | function | expression operation expression | (expression)
+
+value: vname | number | number unit | constant
+
+unit: cm | mm | ...
+
+typedeclaration: typedef type(definition, definition, ..., *definition) {
+    asignment 
+    asignment
+    ...
+
+    length
+}
+
+ifcontrol: if (boolean_expression) {
+
+} | if (boolean_expresion) {
+
+} else {
+
+} | if (boolean_expression) {
+
+} else if(boolean_expression) {
+
+} ... else {
+
+}
+
+forcontrol: for (asignment; boolean_expression; asignment) {
+
+} | 
+for (vname = expression : expression ) {
+    
+}

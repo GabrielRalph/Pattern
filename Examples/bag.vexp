@@ -1,0 +1,24 @@
+w = 18cm
+h = 12cm
+d = 6cm
+
+
+r = d/2;
+rl = r * pi / 2
+
+fw = w + 2 * d + (pi - 4) * r
+bh = h + 2 * d + (pi - 4) * r
+point a = 0
+point b = a down h
+point c = a down (h + r)
+point x = b right r
+point y = x right rl
+point x1 = (b right fw) left r
+point y1 = x1 left rl
+rectangle rc1 = a, (fw, h), r
+rectangle rc2 = c, (w, bh), r
+
+l1 = length(rc1)
+l2 = length(rc2)
+d1 = dist(y, y1)
+d2 = w - 2*r

@@ -12,8 +12,10 @@
   </body>
 
   <script type = "module">
-    import {FUNCTIONS, UNITS, Operator, TYPES, parseVExp, creg} from "../VEXP/vexp.js"
+    import {FUNCTIONS, UNITS, CONSTANTS, Operator, TYPES, parseVExp, creg} from "../VExp/vexp.js"
     let units = Object.keys(UNITS);
+    let constants = Object.keys(CONSTANTS);
+    console.log(constants);
     let text = localStorage.getItem('code');
     let ce = document.querySelector('code-editor');
     let dg = document.querySelector('svg-diagram');
@@ -21,20 +23,27 @@
     ce.input.value = text;
     ce.inputChange();
 
-    console.log(creg.source);
-    console.log({creg});
+    console.log({a: Operator.regexp});
     let base = [
       {
-        regexp: `(?<=^|\\W|\\n)\\d+(?:\\.\d+)?([eE]-?\d+)?(\\s*(${units.join("|")}))?(?=$|\\W|\\n)`,
+        regexp: `(?<=\\b)\\d+(?:\\.\d+)?([eE]-?\d+)?(\\s*(${units.join("|")}))?(?=\\b)`,
         class: "u",
       },
       {
-        regexp: `(?<=^|\\n|\\W)(${Object.keys(FUNCTIONS).join("|")})(?=\\s*\\()`,
+        regexp: `(?<=\\b)${constants.join("|")}(?=\\b)`,
+        class: "c u",
+      },
+      {
+        regexp: `(?<=\\b)(${Object.keys(FUNCTIONS).join("|")})(?=\\s*\\()`,
         class: "f",
       },
       {
-        regexp: `(?<=^|\\n)(${Object.keys(TYPES).join("|")})(?=$|\\W|\\n|\\))`,
+        regexp: `(?<=^|\\n)(${Object.keys(TYPES).join("|")})(?=\\b)`,
         class: "v"
+      },
+      {
+        regexp: Operator.regexp.source,
+        class: "o"
       },
       {
         regexp: creg.source,
@@ -42,6 +51,7 @@
       }
     ];
     ce.syntaxes = base;
+    console.log(base);
 
     ce.onchangeend = (text) => {
       localStorage.setItem('code', text)
@@ -135,8 +145,14 @@
     hl.v {
       color: #b456da;
     }
+    hl.o {
+      color: #8e0f79;
+    }
     hl.u {
       color: #f47a0d;
+    }
+    hl.c.u {
+      color: #f43b0d;
     }
     hl.f {
       color: #1a7eca;

@@ -1,0 +1,50 @@
+f2br0 = 1.13
+waist = 88mm
+fw = waist / (2 * (1 + f2br0))
+bw = fw * f2br0
+cd = 26mm
+hd = 16mm
+c2h = 5mm
+cdt1 = 0.5
+cdt2 = 0.7
+cdt3 = 0.65
+cdt4 = 0.5
+sl = cd + c2h * 0.1
+f2br = bw/fw
+thetab = 2 deg
+theta = thetab / f2br
+
+point A = 0
+point G = A down cd
+point F = G left fw * 0.26
+point B = G + (A - G) × dir(-theta)
+point C = B right fw
+point D = C + sl * dir(270 deg + theta)
+point E = F + c2h * dir(270 deg - theta)
+point H = B + hd * dir(270 deg - theta)
+point H2 = C + hd * dir(270deg + theta)
+
+line _a = B, H
+cubic _b = H, G * cdt1 + H * (1 - cdt1), G * cdt2 + F * (1 - cdt2), F
+
+line _c = F, E
+
+cubic _d = E, E right fw/2, D - dir(theta)*fw/2, D
+line _e = D, C
+line _f = B, C
+point I = D + sl * dir(90deg - thetab)
+point N = I right bw
+point M = N down cd right cd * sin(thetab)/cos(thetab)
+point L = M right bw * 0.51
+point K = L + c2h * dir(270deg + thetab)
+point O = I + hd * dir(270deg - thetab)
+point O2 = N + hd * dir(270deg + thetab)
+
+
+line _g = D, I
+line _h = I, N
+line _i = N, O2
+cubic _i3 = O2, M * cdt3 + O2 * (1 - cdt3), M * cdt4 + L * (1 - cdt4), L
+line _i4 = L, K
+cubic _i5 = D, D + dir(-thetab) * fw/2, K left (bw/2 + fw/2), K
+hip = 2 * (dist(H, H2) + dist(O, O2)) / 1mm

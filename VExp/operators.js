@@ -145,14 +145,14 @@ class Operator {
     if (op1 in Operator.SPEC_CHARS) {
       t1 = "\\" + op1;
     } else {
-      t1 = "(?:\\W|^)" + op1;
+      t1 = "(?:\\b)" + op1;
     }
 
     let t2 = "";
     if (op2 in Operator.SPEC_CHARS) {
       t2 = "\\" + op2;
     } else {
-      t2 = op2 + "(?:\\W|$)";
+      t2 = op2 + "(?:\\b)";
     }
 
     return new RegExp(t1 + "\\s*" + t2);
@@ -165,7 +165,7 @@ class Operator {
       if (op in Operator.SPEC_CHARS) {
         op_regex += `\\${op}`;
       } else if (op in Operator.TEXT_OPERATORS){
-        op_regex += `(?:\\W|^)${op}(?:\\W|$)`
+        op_regex += `(?:\\b)${op}(?:\\b)`
       } else {
         op_regex += op;
       }
