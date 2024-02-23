@@ -96,7 +96,7 @@ const FUNCTIONS = {
       let length = solveVector(args[1], data)
       // console.log(length);
 
-      path = getPath.apply(null, path);
+      path = getPath(path);
       return new Vector(path.getPointAtLength(length.x));
     // } catch (e) {
     //   console.log(e);

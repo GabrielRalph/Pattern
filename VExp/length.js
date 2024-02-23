@@ -17,7 +17,7 @@ export function getPath(elem) {
       break;
 
     case "arc":
-      path.props = { d: `M${value[0]}A${value[1]},${value[2].x},${value[3]},${value[4]}` };
+      path.props = { d: `M${elem[0]}A${elem[1]},${elem[2].x},${elem[3]},${elem[4]}` };
       break;
 
     case "rectangle":
