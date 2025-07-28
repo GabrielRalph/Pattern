@@ -54,7 +54,7 @@ class ContextMenuItem extends SvgPlus {
     onMouseEnter() {    
         let item = this.value;
         if (item.submenu) {
-            let submenu = new ContextMenu(this.pos, item.submenu, this.scale, false, this.isLeft);
+            let submenu = new ContextMenu(this.pos.clone(), item.submenu, this.scale, false, this.isLeft);
             this.subMenu = submenu;
             this.appendChild(submenu);
         }
