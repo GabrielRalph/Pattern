@@ -1,4 +1,5 @@
 import {SvgPlus, Vector} from "../SvgPlus/4.js";
+import { ContextMenu } from "./context-menu.js";
 import {DotNote} from "./dot-note.js";
 import {ViewBox} from "./ViewBox.js"
 
@@ -7,6 +8,8 @@ function dispName(name) {
   return name;
 }
 class SvgDiagram extends SvgPlus {
+  renderNames = true;
+  hidePoints = false;
   constructor(el){
     super(el);
   }
@@ -56,23 +59,53 @@ class SvgDiagram extends SvgPlus {
     let errors = [];
     for (let name in data) {
       let value = data[name];
-      let render_method = "render_" + value.type;
-      try {
-        this[render_method](value, name);
-      } catch(e) {
-        // console.log(render_method, e);
-        errors.push(value);
+      if (!(value.type == "point" && this.hidePoints)) {
+        let render_method = "render_" + value.type;
+        try {
+          this[render_method](value, name);
+        } catch(e) {
+          // console.log(render_method, e);
+          errors.push(value);
+        }
       }
     }
   }
 
+  oncontextmenu(e) {
+    let v = new Vector(e.clientX, e.clientY);
+    e.preventDefault();
+    this.createChild(ContextMenu, {}, v, [
+      {
+        title: "Export",
+        submenu: [
+          {title: "Save SVG", action: () => this.exportSVG()},
+        ]
+      },
+      {
+        title: this.renderNames ? "Hide Names" : "Show Names", 
+        action: (b) => {
+          this.renderNames = !this.renderNames
+          this.render();
+          b.titleValue = this.renderNames ? "Hide Names" : "Show Names"
+        }
+      },
+      {
+        title: this.hidePoints ? "Show Points" : "Hide Points", 
+        action: (b) => {
+          this.hidePoints = !this.hidePoints
+          this.render();
+          b.titleValue = this.hidePoints ? "Show Points" : "Hide Points"
+        }
+      },
 
+    ], 13);
+  }
 
   render_point(value, name) {
     let scale = this.viewBox.scale;
     let note = new DotNote({
       dotRadius: scale * 5,
-      text: dispName(name),
+      text: this.renderNames ? dispName(name) : "",
       position: value.mul(1, -1),
       textSize: 40 * scale,
       autoOffset: true,
@@ -128,7 +161,7 @@ class SvgDiagram extends SvgPlus {
       offset: p2.sub(p1),
       strokeWidth: 3 * scale,
     }));
-    let text = dispName(name);
+    let text = this.renderNames ? dispName(name) : ""
     if (text !== "") {
       offset.y *= -1;
       let angle = ((new Vector(1, 0)).angleBetween(offset) * 180 / Math.PI) ;
@@ -164,6 +197,39 @@ class SvgDiagram extends SvgPlus {
       },
       "stroke-width": scale * 3
     });
+  }
+
+  exportSVG(name = "pattern"){
+    let bbox = this.svg.getBBox();
+    let clone = new SvgPlus(this.svg.cloneNode(true))
+    // let elements = clone.querySelectorAll("");
+    const geoEls = {
+      rect: true,
+      circle: true,
+      ellipse: true,
+      line: true,
+      polyline: true,
+      polygon: true,
+      path: true
+    }
+    let match = (real, clone) => {
+      if (real.tagName.toLowerCase() in geoEls) {
+        let s = window.getComputedStyle(real);
+        if (s.fill !== "none") {
+          clone.setAttribute("fill", "black")
+        }
+        if (s.stroke !== "none") {
+          clone.setAttribute("stroke", "black")
+        }
+      }
+
+      for (let i = 0; i < real.children.length; i++) {
+        match(real.children[i], clone.children[i])
+      }
+    }
+    match(this.svg, clone);
+    clone.props = {"viewBox": `${bbox.x} ${bbox.y} ${bbox.width} ${bbox.height}`}
+    clone.saveSvg(name)
   }
 }
 

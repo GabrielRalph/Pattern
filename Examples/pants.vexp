@@ -1,0 +1,93 @@
+f2br0 = 1.13
+fhem = 22cm
+bhem = 16cm
+waist = 82cm
+hips = 90cm
+cd = 26cm
+hd = 12cm
+ht = 85cm
+kh = 50cm
+
+
+
+fsr = 0.5
+fdart = 1cm
+fcext = 1/4
+bcext = 1/2
+
+
+cdt1 = 0.7
+cdt2 = 0.7
+cdt3 = 0.65
+cdt4 = 0.5
+
+s1 = 0.76
+s2 = 0.9
+s3 = 0.2
+s4 = s1 + 0.1
+
+s1s = ht - cd
+
+
+
+
+
+fw = waist / (2 * (1 + f2br0))
+fh = hips / (2 * (1 + f2br0))
+
+bw = fw * f2br0
+bh = fh * f2br0
+
+fw = bw
+fh = bh
+fcext = bcext
+
+fx = fh * fcext
+bx = bh * fcext
+
+f_intake = fh - fdart - fw
+f_seat = fsr * f_intake
+
+point A = 0
+point B = A down cd
+point C = B left fh
+point x = C left fx
+point D = C horizontal A
+
+point F = A down hd
+point G = D down hd
+point h = D right f_seat
+point i = C left (dist(D, h) * dist(G, C) / dist(G, D))
+point j = (x + B)/2 right -0.3cm
+point d1 = (j left fdart/2) horizontal A
+point d2 = d1 right fdart
+point d3 = (d1 + d2)/2 down hd
+point a = A left f_intake * (1 - fsr)
+
+point E = (A down ht) vertical j
+point e1 = E left fhem/2
+point e2 = e1 right fhem
+
+cubic _is1 = e1, e1  up s1s*s1, x, x
+point m = j + (j-x)
+cubic _isr = e2, e2 up s1s*s1, m, m
+
+cubic _ss1 = e2, e2 up s1s*(s4), F down cd*s2, F
+cubic _ss2 = F, F up cd*s3, a, a
+
+cubic _cx = x, x right fx * cdt1, G + unit(G-h) * dist(G, i) * cdt2, G
+line _ses = G, h
+
+t1 = rotate((G - h), 90deg)* 0.3
+t2 = rotate(d3 -d1, -90deg) * 0.2
+t3 = rotate(d3 -d2, 90deg) * 0.6
+t4 = rotate(F -a, -90deg) * 0.3
+
+
+cubic _w1 = h, h + t1, d1+t2, d1
+line _w2 = d1, d3
+line _w3 = d3, d2
+cubic _w4 = d2, d2+t3, a+t4, a
+
+line _hem = e1, e2
+

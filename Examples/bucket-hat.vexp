@@ -1,0 +1,18 @@
+hc_1 = 40cm
+hc_2 = 35cm
+segs = 5
+
+h = 10cm
+
+r1 = hc_1 / (2 * pi)
+r2 = hc_2 / (2 * pi) 
+
+// point A = 0
+x = (r2/r1) * h / (1 - r2/r1)
+r0 = sqrt((x + h)^2 + r1^2)
+
+theta = hc_1 / (r0 * segs)
+theta = 45deg
+
+point A = rotate((0, -r0), theta/2) up r0
+point B= rotate((0, -r0),- theta/2) up r0

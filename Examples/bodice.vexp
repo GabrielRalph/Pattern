@@ -1,0 +1,131 @@
+NECK = 38cm // neck circumference
+BUST = 115cm // bust circumference
+WAIST = 92cm
+ABDOMEN = 86cm
+HIP = 93cm
+
+ext = 7cm
+
+BCL = 52cm + ext// back center length
+BFL = 56cm + ext// back full length
+BSL = 56cm + ext// back shoulder slope
+
+FCL = 44cm  +ext// front center length
+FFL = 55cm  +ext// front full length
+FSL = 56cm  +ext// front shoulder slope
+
+
+neck = 21cm
+SL = 9cm // shoulder length
+AS = neck/2 + SL // 23cm // across shoulder
+
+
+BAS = AS + 1cm // back accross shoulder
+AC = 19.5cm // across chest
+BD = 27cm // bust depth
+BS = 37.2cm//22.5cm // bust span
+
+AD = 22cm // Armhole depth
+AB = 20cm // accross back
+
+SIDE = 31cm + ext// 37cm // side length
+C2F = 180cm // crown to floor
+CB2F = 156cm // center back neck to floor (MAY BE INNACURATE LOL)
+W2F = 103cm // waist to floor
+
+bdi = 1.5" // back dart intake
+dp = BS/2 // dart placement
+bdp = BS/2 // back dart placement
+fba = BUST/4 // front bust arc
+fwa = WAIST/4 - 1"/4 // front waist arc
+bwa = WAIST/4 + 1"/4 // back waist arc
+
+
+point A = 0
+
+point b = A down BFL
+point c = A right BAS
+point d = b up BCL
+point z = b right (fwa + bdi)
+point f = z down 3"/16
+point g = b right bdp
+point h = g right bdi
+point i = (g + h)/2
+point j = b up SIDE
+point l = j vertical i
+point m = l down 3"/4
+point n = b up sqrt(BSL^2 - BAS^2) vertical c
+point o = c left sqrt(SL^2 - dist(c, n)^2)
+point p = intercept(d, 0l righ 4", o, rotate(o-n, 90deg))
+point q = p-unit(1,-1)*3"/8
+point k = j right (fba + 3"/8)
+point v = k down 1"/2
+point w = (d + j)/2 down 3"/4
+point X = w right AB
+
+point t1 = v + rotate(unit(f-v), -90deg) * 4"
+point t2 = n + rotate(unit(n-o), -90deg) * 1"
+line _db = b,d
+cubic _bneck = d, p, p, o
+line __ = o, n
+cubic _ah = n, t2, t1, v
+line _vf = v,f
+line _fh = f, h
+line _gb = g, b
+line _gm = g,m
+line _hm = h,m
+
+
+
+
+
+// ~~~~~~~~~~~ FRONT ~~~~~~~~~~~~ //
+
+point B = A down FFL
+point C = A left AS
+point D = B up FCL
+line gl = D, D left 4"
+point E = C down (FFL - sqrt(FSL^2 - AS^2))
+point F = C right sqrt(SL^2 - dist(E, C)^2)
+point G = intercept(F, rotate(E-F, 90deg), D, 0 left 4")
+point H = G + dir(45deg) * 0.5"
+point I = E down AD
+point J = I down 2"
+point K = (E + J)/2
+point L = K vertical A
+point M = K right 0.5"
+point N = BD * unit(B-E) + E
+point O = N vertical A
+point P = O left BS/2
+
+
+yJP = abs(y(J) - y(P))
+yIP = abs(y(I) - y(P))
+PQ = fba - BS/2
+point Q = P left sqrt(PQ^2 - yJP^2) horizontal J
+point R = P left sqrt((PQ + 3"/8)^2 - yIP^2) horizontal I
+point S = R + unit(Q-R) * SIDE
+point T = R + unit(Q-R) * 0.5"
+
+point U = B left dp
+point Y = T + rotate(unit(R-S), 90deg)* 0.5"
+
+point V = U down 3"/16
+point W = S + unit(V-S) * (fwa - dist(B, V))
+
+point x = P + dist(P, V) * unit(W-P)
+
+cubic _neck = F, (F*0.15+G*0.85), G, D
+line ef = F, E
+
+point t1 =  E + rotate(unit(E-F), 90deg) * 5.2"
+point t2 = Y + unit(T-Y) * 3.5"
+cubic ah = E, t1, t2, Y
+line ys = Y, S
+line sx = S, x
+line vb = V, B
+line bd = B,D
+line xp = x, P
+line pv = P, V
+
+
