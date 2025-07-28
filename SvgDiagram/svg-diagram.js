@@ -199,7 +199,8 @@ class SvgDiagram extends SvgPlus {
     });
   }
 
-  exportSVG(name = "pattern"){
+
+  get svgCopy() {
     let bbox = this.svg.getBBox();
     let clone = new SvgPlus(this.svg.cloneNode(true))
     // let elements = clone.querySelectorAll("");
@@ -229,7 +230,11 @@ class SvgDiagram extends SvgPlus {
     }
     match(this.svg, clone);
     clone.props = {"viewBox": `${bbox.x} ${bbox.y} ${bbox.width} ${bbox.height}`}
-    clone.saveSvg(name)
+    return clone;
+  }
+
+  exportSVG(name = "pattern"){
+    this.svgCopy.saveSvg(name);
   }
 }
 
